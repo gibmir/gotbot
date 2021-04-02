@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -12,18 +12,25 @@ import (
 )
 
 var (
-	Configuration config.Config
+	configuration *config.Config
 )
 
 func init() {
-	Configuration = config.Create()
+	factory, err := config.CreateFactory()
+	if err != nil {
+		log.Fatal("exception occurred while resolving config factory,", err)
+	}
+	c, err := factory.Create()
+	if err != nil {
+		log.Fatal("exception occurred while creating config,", err)
+	}
+	configuration = c
 }
 
 func main() {
-	discord, err := discordgo.New("Bot " + Configuration.Token)
+	discord, err := discordgo.New("Bot " + configuration.Token)
 	if err != nil {
-		fmt.Println("error creating Discord session,", err)
-		return
+		log.Fatal("error creating Discord session,", err)
 	}
 	discord.AddHandler(handler.OnMessage)
 
@@ -33,12 +40,11 @@ func main() {
 	// Open a websocket connection to Discord and begin listening.
 	err = discord.Open()
 	if err != nil {
-		fmt.Println("error opening connection,", err)
-		return
+		log.Fatal("error opening connection,", err)
 	}
 
 	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
+	log.Println("gotbot is ready to go :) Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc

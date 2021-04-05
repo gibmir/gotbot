@@ -20,7 +20,8 @@ go build
     ```text
     @gotbot !help
     ```
-* ### !rnd return random number
+* ### !rnd 
+    rnd returns random number
     with max value border
     ```text
     @gotbot !rnd 10
@@ -29,7 +30,8 @@ go build
     ```text
     @gotbot !rnd 50 100
     ``` 
-* ### !roll return random element from provided list
+* ### !roll 
+    roll returns random element from provided list
     ```text
     @gotbot !roll red green blue 
     ```

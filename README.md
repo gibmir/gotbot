@@ -8,6 +8,13 @@ Project represents a simple discord bot written in go language
 go build
 ```
 
+## configuration:
+
+You can use different configuration sources.
+```bash
+./gotbot -ct {cmd, yaml, env}
+```
+
 ## run:
 
 ```bash

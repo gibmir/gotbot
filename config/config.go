@@ -5,7 +5,7 @@ import (
 )
 
 /*configuration types*/
-const commandLineConfigType = "command"
+const cmdConfigType = "cmd"
 const yamlConfigType = "yaml"
 const envConfigType = "env"
 
@@ -26,8 +26,8 @@ type ConfigFactory interface {
 // Creates configuration factory with specified command line reader
 func CreateFactory(reader *CommandLineReader) (ConfigFactory, error) {
 	configType := reader.DefaultRead(configTypeArgName,
-		commandLineConfigType /*default*/)
-	if commandLineConfigType == configType {
+		cmdConfigType /*default*/)
+	if cmdConfigType == configType {
 		return CommandLineConfigFactory{*reader}, nil
 	} else if yamlConfigType == configType {
 		return YamlConfigFactory{cReader: *reader}, nil
@@ -35,6 +35,6 @@ func CreateFactory(reader *CommandLineReader) (ConfigFactory, error) {
 		return EnvConfigFactory{}, nil
 	} else {
 		return nil, fmt.Errorf("%s is incorrect. Must be {%s,%s,%s}",
-			configType, commandLineConfigType, yamlConfigType, envConfigType)
+			configType, cmdConfigType, yamlConfigType, envConfigType)
 	}
 }

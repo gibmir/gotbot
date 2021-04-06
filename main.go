@@ -16,7 +16,8 @@ var (
 )
 
 func init() {
-	factory, err := config.CreateFactory()
+	reader := config.Create()
+	factory, err := config.CreateFactory(reader)
 	if err != nil {
 		log.Fatal("exception occurred while resolving config factory,", err)
 	}

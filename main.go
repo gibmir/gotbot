@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/gibmir/gotbot/command"
 	"github.com/gibmir/gotbot/config"
 	"github.com/gibmir/gotbot/handler"
 )
@@ -16,7 +17,7 @@ var (
 )
 
 func init() {
-	reader := config.Create()
+	reader := config.CreateReader()
 	factory, err := config.CreateFactory(reader)
 	if err != nil {
 		log.Fatal("exception occurred while resolving config factory,", err)
@@ -33,7 +34,10 @@ func main() {
 	if err != nil {
 		log.Fatal("error creating Discord session,", err)
 	}
-	discord.AddHandler(handler.OnMessage)
+	registry := command.NewRegistry()
+	processor := command.NewDynamicProcessor(&registry)
+	h := handler.NewDiscordHandler(&processor)
+	discord.AddHandler(h.OnMessage)
 
 	// In this example, we only care about receiving message events.
 	discord.Identify.Intents = discordgo.IntentsGuildMessages

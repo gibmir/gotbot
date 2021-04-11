@@ -5,16 +5,17 @@ import (
 	"os"
 )
 
-const tokenEnvName = "TOKEN"
+const TokenEnvName = "TOKEN"
 
-var ErrEnvEmptyToken = fmt.Errorf("[%v] environment variable is null", tokenEnvName)
+var ErrEnvEmptyToken = fmt.Errorf("[%v] environment variable wasn't specified",
+	TokenEnvName)
 
 type EnvConfigFactory struct {
 }
 
 func (factory EnvConfigFactory) Create() (*Config, error) {
-	
-	token := os.Getenv(tokenEnvName)
+
+	token := os.Getenv(TokenEnvName)
 	if token == "" {
 		return nil, ErrEnvEmptyToken
 	}

@@ -10,7 +10,7 @@ const defaultConfigPath = "/etc/gotbot/config.yaml"
 
 //
 type YamlConfigFactory struct {
-	cReader CommandLineReader
+	cReader CmdReader
 }
 
 func (factory YamlConfigFactory) Create() (*Config, error) {

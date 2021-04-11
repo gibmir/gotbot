@@ -7,19 +7,20 @@ import (
 )
 
 /*command line args*/
-const tokenArgName = "-t"
+const TokenArgName = "-t"
 
-var ErrArgEmptyToken = fmt.Errorf("[%v] argument is null", tokenArgName)
+var ErrArgEmptyToken = fmt.Errorf("[%v] argument wasn't specified",
+	TokenArgName)
 
-type CommandLineReader struct {
+type CmdReader struct {
 	args map[string]string
 }
 
-type CommandLineConfigFactory struct {
-	reader CommandLineReader
+type CmdConfigFactory struct {
+	reader CmdReader
 }
 
-func Create() *CommandLineReader {
+func CreateReader() *CmdReader {
 	args := make(map[string]string)
 	osArgs := os.Args
 	key := ""
@@ -31,14 +32,14 @@ func Create() *CommandLineReader {
 			args[key] = osArg
 		}
 	}
-	return &CommandLineReader{args}
+	return &CmdReader{args}
 }
 
-func (reader CommandLineReader) Read(key string) string {
+func (reader CmdReader) Read(key string) string {
 	return reader.args[key]
 }
 
-func (reader CommandLineReader) DefaultRead(key, defaultVal string) string {
+func (reader CmdReader) DefaultRead(key, defaultVal string) string {
 	val := reader.args[key]
 	if val == "" {
 		return defaultVal
@@ -47,8 +48,8 @@ func (reader CommandLineReader) DefaultRead(key, defaultVal string) string {
 }
 
 // configuration factory that uses command line arguments
-func (factory CommandLineConfigFactory) Create() (*Config, error) {
-	token := factory.reader.Read(tokenArgName)
+func (factory CmdConfigFactory) Create() (*Config, error) {
+	token := factory.reader.Read(TokenArgName)
 	if token == "" {
 		return nil, ErrArgEmptyToken
 	}

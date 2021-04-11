@@ -7,9 +7,17 @@ import (
 	"github.com/gibmir/gotbot/command"
 )
 
+type DiscordHandler struct {
+	processor *command.DynamicProcessor
+}
+
+func NewDiscordHandler(p *command.DynamicProcessor) DiscordHandler {
+	return DiscordHandler{p}
+}
+
 // This function will be called (due to AddHandler above) every time a new
 // message is created on any channel that the authenticated bot has access to.
-func OnMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (handler DiscordHandler) OnMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Ignore all messages created by tFhe bot itself
 	// This isn't required in this specific example but it's a good practice.
@@ -24,8 +32,13 @@ func OnMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 			log.Printf("There is a command string [%v] in [%v]",
 				commandString, m.Content)
 			com := command.Parse(&commandString)
+			var p = *handler.processor
+			r, err := p.Process(&com)
+			if err != nil {
+				r = err.Error()
+			}
 			s.ChannelMessageSend(m.ChannelID,
-				"@"+m.Author.Username+", result is: "+command.ProcessCommand(&com))
+				"@"+m.Author.Username+", result is: "+r)
 		} else {
 			s.ChannelMessageSend(m.ChannelID,
 				"@"+m.Author.Username+", please, use !help")

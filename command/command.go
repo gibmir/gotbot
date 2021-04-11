@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	commandPrefix      = "!"
+	commandPrefix = "!"
 )
 
 var (
@@ -15,14 +15,52 @@ var (
 	RollProcessor RollCommandProcessor = RollCommandProcessor{}
 )
 
+type Command struct {
+	Name      string
+	Arguments []string
+}
 type CommandProcessor interface {
 	Process(c *Command) (string, error)
 	GetDescription() string
 }
 
-type Command struct {
-	Name      string
-	Arguments []string
+type ProcessorRegistry struct {
+	cache map[string]*CommandProcessor
+}
+
+func NewRegistry() ProcessorRegistry {
+	registry := ProcessorRegistry{map[string]*CommandProcessor{}}
+	help := CommandProcessor(HelpCommandProcessor{&registry})
+	rnd := CommandProcessor(RndCommandProcessor{})
+	roll := CommandProcessor(RollCommandProcessor{})
+
+	registry.Register("help", &help)
+	registry.Register("rnd", &rnd)
+	registry.Register("roll", &roll)
+	return registry
+}
+func (registry ProcessorRegistry) Register(cName string, processor *CommandProcessor) {
+	registry.cache[cName] = processor
+}
+
+func (registry ProcessorRegistry) Get(name *string) *CommandProcessor {
+	return registry.cache[*name]
+}
+
+type DynamicProcessor struct {
+	registry *ProcessorRegistry
+}
+
+func NewDynamicProcessor(r *ProcessorRegistry) DynamicProcessor {
+	return DynamicProcessor{registry: r}
+}
+func (p *DynamicProcessor) Process(c *Command) (string, error) {
+	var processor CommandProcessor = *p.registry.Get(&c.Name)
+	if processor != nil {
+		return processor.Process(c)
+	} else {
+		return "", fmt.Errorf("%v is unsupported", c.Name)
+	}
 }
 
 type DefaultCommandProcessor struct {
@@ -44,15 +82,6 @@ func GetCommandIndex(message *string) int {
 	return strings.LastIndex(*message, commandPrefix)
 }
 
-func ProcessCommand(c *Command) string {
-	processor := ResolveProcessor(&c.Name)
-	r, err := processor.Process(c)
-	if err != nil {
-		return err.Error()
-	}
-	return r
-}
-
 func Parse(message *string) Command {
 	commandString := strings.Split(*message, " ")
 	return Command{removeCommandPrefix(&commandString[0]), commandString[1:] /*arguments*/}
@@ -60,18 +89,4 @@ func Parse(message *string) Command {
 
 func removeCommandPrefix(message *string) string {
 	return strings.TrimPrefix(*message, commandPrefix)
-}
-
-func ResolveProcessor(cNameLink *string) CommandProcessor {
-	cName := *cNameLink
-	switch cName {
-	case "help":
-		return HelpProcessor
-	case "rnd":
-		return RndProcessor
-	case "roll":
-		return RollProcessor
-	default:
-		return DefaultCommandProcessor{cName}
-	}
 }

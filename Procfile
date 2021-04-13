@@ -1,1 +1,1 @@
-web: gotbot -ct env
+worker: gotbot -ct env

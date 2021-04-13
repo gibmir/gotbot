@@ -9,12 +9,6 @@ const (
 	commandPrefix = "!"
 )
 
-var (
-	HelpProcessor HelpCommandProcessor = HelpCommandProcessor{}
-	RndProcessor  RndCommandProcessor  = RndCommandProcessor{}
-	RollProcessor RollCommandProcessor = RollCommandProcessor{}
-)
-
 type Command struct {
 	Name      string
 	Arguments []string

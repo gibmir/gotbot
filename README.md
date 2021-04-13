@@ -42,3 +42,14 @@ You can use different configuration sources.
     ```text
     @gotbot !roll red green blue 
     ```
+
+## heroku
+
+for debugging purposes you can create a .env file (key=value):
+```text
+TOKEN=your_token
+```
+and run heroku with
+```bash
+heroku local -e ${ENV.FILE.PATH}
+```

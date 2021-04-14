@@ -2,7 +2,7 @@ package command
 
 import "fmt"
 
-const helpDescriprion = "you can use !rnd !roll"
+const HelpDescriprion = "you can use !rnd !roll"
 
 type HelpCommandProcessor struct {
 	registry *ProcessorRegistry
@@ -13,13 +13,13 @@ func (processor HelpCommandProcessor) Process(c *Command) (string, error) {
 }
 
 func (processor HelpCommandProcessor) GetDescription() string {
-	return helpDescriprion
+	return HelpDescriprion
 }
 
 func (processor HelpCommandProcessor) processHelp(c *Command) string {
 	argCount := len(c.Arguments)
 	if argCount == 0 {
-		return helpDescriprion
+		return HelpDescriprion
 	} else {
 		result := ""
 		for _, arg := range c.Arguments {

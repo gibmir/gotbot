@@ -8,6 +8,7 @@ import (
 const RollDescription = `roll returns random element from provided list:
 @gotbot !roll red green blue 
 `
+
 var ErrRollNoArgs = fmt.Errorf("there is no arguments for !roll")
 
 type RollCommandProcessor struct{}
@@ -20,11 +21,13 @@ func (processor RollCommandProcessor) GetDescription() string {
 	return RollDescription
 }
 
-
 func ProcessRoll(c *Command) (string, error) {
 	argCount := len(c.Arguments)
 	if argCount < 1 {
 		return "", ErrRollNoArgs
+	}
+	if argCount == 1 {
+		return c.Arguments[0], nil
 	}
 	return c.Arguments[rand.Intn(argCount)], nil
 }

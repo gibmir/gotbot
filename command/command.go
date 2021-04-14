@@ -33,6 +33,12 @@ func NewRegistry() ProcessorRegistry {
 	registry.Register("roll", &roll)
 	return registry
 }
+
+func EmptyRegistry() ProcessorRegistry {
+	registry := ProcessorRegistry{map[string]*CommandProcessor{}}
+	return registry
+}
+
 func (registry ProcessorRegistry) Register(cName string, processor *CommandProcessor) {
 	registry.cache[cName] = processor
 }
@@ -48,25 +54,14 @@ type DynamicProcessor struct {
 func NewDynamicProcessor(r *ProcessorRegistry) DynamicProcessor {
 	return DynamicProcessor{registry: r}
 }
-func (p *DynamicProcessor) Process(c *Command) (string, error) {
-	var processor CommandProcessor = *p.registry.Get(&c.Name)
+
+func (p DynamicProcessor) Process(c *Command) (string, error) {
+	var processor *CommandProcessor = p.registry.Get(&c.Name)
 	if processor != nil {
-		return processor.Process(c)
+		return (*processor).Process(c)
 	} else {
 		return "", fmt.Errorf("%v is unsupported", c.Name)
 	}
-}
-
-type DefaultCommandProcessor struct {
-	commandName string
-}
-
-func (processor DefaultCommandProcessor) Process(c *Command) (string, error) {
-	return "", fmt.Errorf("%v is unsupported", c.Name)
-}
-
-func (processor DefaultCommandProcessor) GetDescription() string {
-	return processor.commandName + " is unsupported. Please, use !help"
 }
 
 // Provides command index in string.

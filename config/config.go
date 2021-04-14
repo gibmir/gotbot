@@ -12,6 +12,27 @@ const envConfigType = "env"
 /*command line args*/
 const configTypeArgName = "-ct"
 
+// Represent config as map
+type Reader struct {
+	args map[string]string
+}
+
+// Provides config param for specified key.
+// return empty string if key wasn't present
+func (reader Reader) Read(key string) string {
+	return reader.args[key]
+}
+
+// Provides config param for specified key.
+// return specified default value if key wasn't present
+func (reader Reader) DefaultRead(key, defaultVal string) string {
+	val := reader.args[key]
+	if val == "" {
+		return defaultVal
+	}
+	return val
+}
+
 // Represents configuration for bot
 type Config struct {
 	Token string
@@ -24,7 +45,7 @@ type ConfigFactory interface {
 }
 
 // Creates configuration factory with specified command line reader
-func CreateFactory(reader *CmdReader) (ConfigFactory, error) {
+func CreateFactory(reader *Reader) (ConfigFactory, error) {
 	configType := reader.DefaultRead(configTypeArgName,
 		cmdConfigType /*default*/)
 	if cmdConfigType == configType {

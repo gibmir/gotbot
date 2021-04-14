@@ -12,19 +12,14 @@ const TokenArgName = "-t"
 var ErrArgEmptyToken = fmt.Errorf("[%v] argument wasn't specified",
 	TokenArgName)
 
-type CmdReader struct {
-	args map[string]string
-}
-
 type CmdConfigFactory struct {
-	reader CmdReader
+	reader Reader
 }
 
-func CreateReader() *CmdReader {
+func NewCmdReader() *Reader {
 	args := make(map[string]string)
-	osArgs := os.Args
 	key := ""
-	for _, osArg := range osArgs {
+	for _, osArg := range os.Args {
 		if strings.Contains(osArg, "-") {
 			key = osArg
 			args[osArg] = ""
@@ -32,19 +27,7 @@ func CreateReader() *CmdReader {
 			args[key] = osArg
 		}
 	}
-	return &CmdReader{args}
-}
-
-func (reader CmdReader) Read(key string) string {
-	return reader.args[key]
-}
-
-func (reader CmdReader) DefaultRead(key, defaultVal string) string {
-	val := reader.args[key]
-	if val == "" {
-		return defaultVal
-	}
-	return val
+	return &Reader{args}
 }
 
 // configuration factory that uses command line arguments

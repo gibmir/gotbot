@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/gibmir/gotbot/command"
@@ -26,12 +27,14 @@ func (handler *DiscordHandler) OnMessage(s *discordgo.Session, m *discordgo.Mess
 	}
 	if isBotWasMentioned(s, m) {
 		log.Println("Bot was mentioned")
-		commandIndex := command.GetCommandIndex(&m.Content)
-		if commandIndex != -1 {
-			commandString := m.Content[commandIndex:len(m.Content)]
+		contentLink := removeMentions(m)
+		cmdIndex := command.GetCommandIndex(contentLink)
+		if cmdIndex != -1 {
+			content := *contentLink
+			content = content[cmdIndex:]
 			log.Printf("There is a command string [%v] in [%v]",
-				commandString, m.Content)
-			com := command.Parse(&commandString)
+				content, m.Content)
+			com := command.Parse(&content)
 			var p = *handler.processor
 			r, err := p.Process(&com)
 			if err != nil {
@@ -53,4 +56,13 @@ func isBotWasMentioned(s *discordgo.Session, m *discordgo.MessageCreate) bool {
 		}
 	}
 	return false
+}
+
+func removeMentions(m *discordgo.MessageCreate) *string {
+	result := m.Content
+	for _, mention := range m.Mentions {
+		result = strings.ReplaceAll(result, "<@!"+mention.ID+">", "")
+	}
+	r := strings.TrimSpace(result)
+	return &r
 }

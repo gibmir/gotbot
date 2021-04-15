@@ -13,11 +13,11 @@ var ErrRollNoArgs = fmt.Errorf("there is no arguments for !roll")
 
 type RollCommandProcessor struct{}
 
-func (processor RollCommandProcessor) Process(c *Command) (string, error) {
+func (processor *RollCommandProcessor) Process(c *Command) (string, error) {
 	return ProcessRoll(c)
 }
 
-func (processor RollCommandProcessor) GetDescription() string {
+func (processor *RollCommandProcessor) GetDescription() string {
 	return RollDescription
 }
 

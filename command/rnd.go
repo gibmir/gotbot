@@ -17,7 +17,7 @@ var ErrRndZeroArgument = fmt.Errorf("you can't use 0 as argument")
 
 type RndCommandProcessor struct{}
 
-func (processor RndCommandProcessor) Process(c *Command) (string, error) {
+func (processor *RndCommandProcessor) Process(c *Command) (string, error) {
 	r, err := ProcessRnd(c)
 	if err != nil {
 		return "", err
@@ -25,7 +25,7 @@ func (processor RndCommandProcessor) Process(c *Command) (string, error) {
 	return strconv.Itoa(r), nil
 }
 
-func (processor RndCommandProcessor) GetDescription() string {
+func (processor *RndCommandProcessor) GetDescription() string {
 	return RndDescription
 }
 

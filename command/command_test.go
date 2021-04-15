@@ -15,7 +15,7 @@ func TestDynamicProcessWithUnexpectedArgBug(t *testing.T) {
 
 func TestDynamicProcessWithHelp(t *testing.T) {
 	registry := EmptyRegistry()
-	var help CommandProcessor = HelpCommandProcessor{&registry}
+	var help CommandProcessor = &HelpCommandProcessor{&registry}
 	registry.Register("help", &help)
 	dynamic := NewDynamicProcessor(&registry)
 	unexpectedCommand := Command{"help", make([]string, 0)}

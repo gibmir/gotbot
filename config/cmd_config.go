@@ -13,7 +13,7 @@ var ErrArgEmptyToken = fmt.Errorf("[%v] argument wasn't specified",
 	TokenArgName)
 
 type CmdConfigFactory struct {
-	reader Reader
+	reader *Reader
 }
 
 func NewCmdReader() *Reader {
@@ -31,7 +31,7 @@ func NewCmdReader() *Reader {
 }
 
 // configuration factory that uses command line arguments
-func (factory CmdConfigFactory) Create() (*Config, error) {
+func (factory *CmdConfigFactory) Create() (*Config, error) {
 	token := factory.reader.Read(TokenArgName)
 	if token == "" {
 		return nil, ErrArgEmptyToken

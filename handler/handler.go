@@ -17,7 +17,7 @@ func NewDiscordHandler(p *command.DynamicProcessor) DiscordHandler {
 
 // This function will be called (due to AddHandler above) every time a new
 // message is created on any channel that the authenticated bot has access to.
-func (handler DiscordHandler) OnMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (handler *DiscordHandler) OnMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Ignore all messages created by tFhe bot itself
 	// This isn't required in this specific example but it's a good practice.

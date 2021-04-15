@@ -13,8 +13,7 @@ var ErrEnvEmptyToken = fmt.Errorf("[%v] environment variable wasn't specified",
 type EnvConfigFactory struct {
 }
 
-func (factory EnvConfigFactory) Create() (*Config, error) {
-
+func (factory *EnvConfigFactory) Create() (*Config, error) {
 	token := os.Getenv(TokenEnvName)
 	if token == "" {
 		return nil, ErrEnvEmptyToken

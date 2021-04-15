@@ -24,9 +24,9 @@ type ProcessorRegistry struct {
 
 func NewRegistry() ProcessorRegistry {
 	registry := ProcessorRegistry{map[string]*CommandProcessor{}}
-	help := CommandProcessor(HelpCommandProcessor{&registry})
-	rnd := CommandProcessor(RndCommandProcessor{})
-	roll := CommandProcessor(RollCommandProcessor{})
+	help := CommandProcessor(&HelpCommandProcessor{&registry})
+	rnd := CommandProcessor(&RndCommandProcessor{})
+	roll := CommandProcessor(&RollCommandProcessor{})
 
 	registry.Register("help", &help)
 	registry.Register("rnd", &rnd)
@@ -39,12 +39,12 @@ func EmptyRegistry() ProcessorRegistry {
 	return registry
 }
 
-func (registry ProcessorRegistry) Register(cName string, processor *CommandProcessor) {
-	registry.cache[cName] = processor
+func (registry *ProcessorRegistry) Register(command string, processor *CommandProcessor) {
+	registry.cache[command] = processor
 }
 
-func (registry ProcessorRegistry) Get(name *string) *CommandProcessor {
-	return registry.cache[*name]
+func (registry *ProcessorRegistry) Get(command *string) *CommandProcessor {
+	return registry.cache[*command]
 }
 
 type DynamicProcessor struct {
@@ -55,7 +55,7 @@ func NewDynamicProcessor(r *ProcessorRegistry) DynamicProcessor {
 	return DynamicProcessor{registry: r}
 }
 
-func (p DynamicProcessor) Process(c *Command) (string, error) {
+func (p *DynamicProcessor) Process(c *Command) (string, error) {
 	var processor *CommandProcessor = p.registry.Get(&c.Name)
 	if processor != nil {
 		return (*processor).Process(c)

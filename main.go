@@ -22,7 +22,7 @@ func init() {
 	if err != nil {
 		log.Fatal("exception occurred while resolving config factory,", err)
 	}
-	c, err := factory.Create()
+	c, err := (*factory).Create()
 	if err != nil {
 		log.Fatal("exception occurred while creating config,", err)
 	}

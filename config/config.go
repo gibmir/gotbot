@@ -45,15 +45,18 @@ type ConfigFactory interface {
 }
 
 // Creates configuration factory with specified command line reader
-func CreateFactory(reader *Reader) (ConfigFactory, error) {
+func CreateFactory(reader *Reader) (*ConfigFactory, error) {
 	configType := reader.DefaultRead(configTypeArgName,
 		cmdConfigType /*default*/)
 	if cmdConfigType == configType {
-		return CmdConfigFactory{*reader}, nil
+		var factory ConfigFactory = &CmdConfigFactory{reader}
+		return &factory, nil
 	} else if yamlConfigType == configType {
-		return YamlConfigFactory{cReader: *reader}, nil
+		var factory ConfigFactory = &YamlConfigFactory{reader}
+		return &factory, nil
 	} else if envConfigType == configType {
-		return EnvConfigFactory{}, nil
+		var factory ConfigFactory = &EnvConfigFactory{}
+		return &factory, nil
 	} else {
 		return nil, fmt.Errorf("%s is incorrect. Must be {%s,%s,%s}",
 			configType, cmdConfigType, yamlConfigType, envConfigType)

@@ -8,15 +8,15 @@ type HelpCommandProcessor struct {
 	registry *ProcessorRegistry
 }
 
-func (processor HelpCommandProcessor) Process(c *Command) (string, error) {
+func (processor *HelpCommandProcessor) Process(c *Command) (string, error) {
 	return processor.processHelp(c), nil
 }
 
-func (processor HelpCommandProcessor) GetDescription() string {
+func (processor *HelpCommandProcessor) GetDescription() string {
 	return HelpDescriprion
 }
 
-func (processor HelpCommandProcessor) processHelp(c *Command) string {
+func (processor *HelpCommandProcessor) processHelp(c *Command) string {
 	argCount := len(c.Arguments)
 	if argCount == 0 {
 		return HelpDescriprion
@@ -29,7 +29,7 @@ func (processor HelpCommandProcessor) processHelp(c *Command) string {
 	}
 }
 
-func (processor HelpCommandProcessor) getDescription(arg *string) string {
+func (processor *HelpCommandProcessor) getDescription(arg *string) string {
 	pLink := processor.registry.Get(arg)
 	if pLink != nil {
 		p := *pLink

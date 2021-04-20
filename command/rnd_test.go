@@ -56,6 +56,14 @@ func TestRndProcessWithOneIncorrectArg(t *testing.T) {
 	assert.ErrorContains(t, err, incorrectArg)
 }
 
+func TestRndProcessWithZeroArg(t *testing.T) {
+	rnd := RndCommandProcessor{}
+	incorrectArg := "0"
+	args := []string{incorrectArg}
+	cmd := Command{"rnd", args}
+	_, err := rnd.Process(&cmd)
+	assert.ErrorType(t, err, ErrRndZeroArgument)
+}
 func TestRndProcessWithFirstIncorrectArg(t *testing.T) {
 	rnd := RndCommandProcessor{}
 	incorrectArg := "incorrectArg"
@@ -72,4 +80,15 @@ func TestRndProcessWithSecondIncorrectArg(t *testing.T) {
 	cmd := Command{"rnd", args}
 	_, err := rnd.Process(&cmd)
 	assert.ErrorContains(t, err, incorrectArg)
+}
+
+func TestRndProcessWithIncorrectBorders(t *testing.T) {
+	rnd := RndCommandProcessor{}
+	arg1 := "10"
+	arg2 := "5"
+	args := []string{arg1, arg2}
+	cmd := Command{"rnd", args}
+	_, err := rnd.Process(&cmd)
+	assert.ErrorContains(t, err, arg1)
+	assert.ErrorContains(t, err, arg2)
 }

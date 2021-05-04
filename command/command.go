@@ -71,6 +71,7 @@ func GetCommandIndex(message *string) int {
 	return strings.LastIndex(*message, commandPrefix)
 }
 
+// Parses command from provided string
 func Parse(message *string) Command {
 	commandString := strings.Split(*message, " ")
 	return Command{removeCommandPrefix(&commandString[0]), commandString[1:] /*arguments*/}

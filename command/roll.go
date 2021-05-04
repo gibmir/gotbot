@@ -27,6 +27,7 @@ func ProcessRoll(c *Command) (string, error) {
 		return "", ErrRollNoArgs
 	}
 	if argCount == 1 {
+		//there is nothing to roll
 		return c.Arguments[0], nil
 	}
 	return c.Arguments[rand.Intn(argCount)], nil

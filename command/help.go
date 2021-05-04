@@ -30,10 +30,9 @@ func (processor *HelpCommandProcessor) processHelp(c *Command) string {
 }
 
 func (processor *HelpCommandProcessor) getDescription(arg *string) string {
-	pLink := processor.registry.Get(arg)
-	if pLink != nil {
-		p := *pLink
-		return p.GetDescription()
+	p := processor.registry.Get(arg)
+	if p != nil {
+		return (*p).GetDescription()
 	} else {
 		return fmt.Sprintf("[%v] is unsupported. Please, use !help", *arg)
 	}

@@ -32,8 +32,10 @@ func (processor *RndCommandProcessor) GetDescription() string {
 func ProcessRnd(c *Command) (int, error) {
 	argCount := len(c.Arguments)
 	if argCount == 1 {
+		// with upper limit
 		return rndMax(c)
 	} else if argCount == 2 {
+		// with upper and lower limits
 		return rndMinMax(c)
 	} else {
 		return 0, fmt.Errorf("incorrect arguments count [%v]",
